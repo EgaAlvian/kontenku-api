@@ -12,16 +12,16 @@ module.exports = {
       email: {
         type: Sequelize.STRING(100),
         unique: true,
-        allowNull: false
+        allowNull: false,
       },
       username: {
         type: Sequelize.STRING(255),
         unique: true,
-        allowNull: false
+        allowNull: false,
       },
       password: {
         type: Sequelize.STRING(255),
-        allowNull: false
+        allowNull: false,
       },
       fullName: {
         type: Sequelize.STRING(255),
@@ -31,7 +31,7 @@ module.exports = {
       },
       profilePicture: {
         type: Sequelize.STRING(100),
-        unique: true
+        unique: true,
       },
       token: {
         type: Sequelize.STRING(100),
@@ -40,19 +40,19 @@ module.exports = {
       verified: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-      }
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Users');
-  }
+  },
 };

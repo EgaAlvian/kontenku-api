@@ -1,9 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken")
+const { Model } = require('sequelize');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -18,12 +16,13 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static createJwtToken(user) {
-      return jwt.sign({
-        id: user.id,
-        email: user.email
-      },
+      return jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+        },
         process.env.JWT_KEY
-      )
+      );
     }
 
     static verifyJwtToken(token) {
@@ -32,58 +31,69 @@ module.exports = (sequelize, DataTypes) => {
 
     static associate(models) {
       // define association here
-      User.hasMany(models.Post)
+      User.hasMany(models.Post);
     }
   }
-  User.init({
-    email: {
-      type: DataTypes.STRING(100),
-      unique: true,
-      allowNull: false
+  User.init(
+    {
+      email: {
+        type: DataTypes.STRING(100),
+        unique: true,
+        allowNull: false,
+      },
+      username: {
+        type: DataTypes.STRING(100),
+        unique: true,
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      fullName: {
+        type: DataTypes.STRING(255),
+      },
+      biodata: {
+        type: DataTypes.STRING(500),
+      },
+      profilePicture: {
+        type: DataTypes.STRING(100),
+        unique: true,
+      },
+      token: {
+        type: DataTypes.STRING(100),
+        unique: true,
+      },
+      verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
     },
-    username: {
-      type: DataTypes.STRING(100),
-      unique: true,
-      allowNull: false
-    },
-    password: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    fullName: {
-      type: DataTypes.STRING(255),
-    },
-    biodata: {
-      type: DataTypes.STRING(500),
-    },
-    profilePicture: {
-      type: DataTypes.STRING(100),
-      unique: true
-    },
-    token: {
-      type: DataTypes.STRING(100),
-      unique: true,
-    },
-    verified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      allowNull: false
-    }
-  }, {
-    sequelize,
-    modelName: 'User',
-    hooks: {
-      beforeCreate: (instance) => {
-        if (!instance.password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)) {
-          throw new Error('Password must be at least 8 characters, has both uppercase and lowercase, number, and symbol')
-        }
+    {
+      sequelize,
+      modelName: 'User',
+      hooks: {
+        beforeSave: (user) => {
+          if (user.changed('password')) {
+            if (
+              !user.password.match(
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+              )
+            ) {
+              throw new Error(
+                'Password must be at least 8 characters, has both uppercase and lowercase, number, and symbol'
+              );
+            }
 
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(instance.password, salt);
+            const salt = bcrypt.genSaltSync(10);
+            const hash = bcrypt.hashSync(user.password, salt);
 
-        instance.password = hash
-      }
+            user.password = hash;
+          }
+        },
+      },
     }
-  });
+  );
   return User;
 };

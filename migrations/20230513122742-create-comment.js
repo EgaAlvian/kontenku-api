@@ -2,35 +2,35 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('comments', {
+    await queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       postId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "posts",
-          key: "id"
-        }
+          model: 'posts',
+          key: 'id',
+        },
       },
       comment: {
-        type: Sequelize.STRING(500)
+        type: Sequelize.STRING(500),
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('comments');
-  }
+    await queryInterface.dropTable('Comments');
+  },
 };

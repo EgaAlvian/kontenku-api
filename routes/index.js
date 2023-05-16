@@ -1,6 +1,11 @@
-const router = require("./user.route")
-const userRoute = require("./user.route")
+const express = require('express');
+const router = require('./user.route');
+const userRoute = require('./user.route');
+const postRoute = require('./post.route');
 
-router.use("/users", userRoute)
+router.use('/users', userRoute);
+router.use('/posts', postRoute);
 
-module.exports = router
+router.use('/uploads', express.static(process.cwd() + '/uploads'));
+
+module.exports = router;
